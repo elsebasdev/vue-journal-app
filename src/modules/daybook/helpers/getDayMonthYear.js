@@ -1,3 +1,4 @@
+//!todo posible mejorar para proxima versiones manejarlo como composable para reulizacion de codigo
 const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const days = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado']
 
