@@ -1,17 +1,24 @@
 export default {
 
     name:'daybook',
+    sensitive: true,
     component: () => import('@/modules/daybook/layout/DayBookLayout.vue'),
     children:[  
         {
-            path: '/',
+            path: '',
             name: 'daybook-home',
+            sensitive: true,
             component: ()=>import(/* webpackChunkName: "homeview" */'@/modules/daybook/view/HomeView.vue')
         },
         {
             path: ':id',
             name: 'entry',
-            component: ()=>import(/* webpackChunkName: "homeview" */'@/modules/daybook/view/EntryView.vue')
+            component: ()=>import(/* webpackChunkName: "homeview" */'@/modules/daybook/view/EntryView.vue'),
+            props:(route) => {
+                return{
+                    id: route.params.id
+                }
+            }
         }
         
     ]

@@ -4,7 +4,7 @@ import dayBookRouter from '@/modules/daybook/router'
 
 const routes = [
   {
-    path: '/home',
+    path: '/',
     name: 'home',
     component: HomeView
   },
@@ -17,14 +17,15 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
-    path: '/daybook/',
+    path: '/daybook',
     ...dayBookRouter
   }
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes,
+  strict: true
 })
 
 export default router
