@@ -6,7 +6,7 @@ import * as mutations  from './mutations'
 
 const journalModule = {
 
-    namesapaced : true,
+    namespaced : true,
     actions,
     getters,
     mutations,
