@@ -8,12 +8,22 @@
         <span class="mx-2 fs-4 fw-light ">{{ year }}</span>
     </div>
     <div>
-      <button class="btn btn-danger m-2">
+
+      <input v-show="false"
+            type="file" 
+            accept="image/*"
+            @change="onLoadImage"
+            ref="inputselector">
+
+      <button @click="deleteEntry()" 
+       class="btn btn-danger m-2"
+       :class="this.id === 'new' ? 'disabled':''">
         borrar
         <i class="fa-solid fa-trash"></i>
       </button>
-      <button class="btn btn-primary">
-        cargar
+      <button @click="onSelectImage" 
+          class="btn btn-primary">
+        Cargar foto
         <i class="fa-solid fa-upload"></i>
       </button>
     </div>
@@ -28,14 +38,21 @@
       >
     </textarea>
   </div>
-  <Fab icon="fa-save"/>
-  <img src="https://cdn.pixabay.com/photo/2024/01/04/21/54/volcano-8488486_1280.jpg" alt="nueva imagen">
+  <Fab icon="fa-save"
+        @on:click="saveEntry"/>
+  <img v-if="entry.picture && !localImage" 
+    :src="entry.picture" alt="nueva imagen">
+  <img 
+  v-if="localImage" 
+  :src="localImage" alt="nueva imagen">
 </template>
 
 <script>
 import { defineAsyncComponent } from 'vue'
-import {mapGetters} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
+import uploadImage from '../helpers/uploadImage'
 import getDayMonthYear from '../helpers/getDayMonthYear'
+import Swal from 'sweetalert2'
 export default {
   props:{
     id:{
@@ -46,7 +63,9 @@ export default {
   data(){
     return{
       
-      entry:null
+      entry:null,
+      localImage: null,
+      file : null
     }
   },
   components:{
@@ -55,6 +74,7 @@ export default {
   computed:
   {
     ...mapGetters('journal', ['getEntriesbyId']),
+    
     day(){
       const {day} = getDayMonthYear(this.entry.date)
       return day
@@ -69,11 +89,84 @@ export default {
     }
   },
   methods:{
+    ...mapActions('journal', ['updateEntries','createEntries','deleteEntries']),
     loadEntry(){
-      const entry = this.getEntriesbyId(this.id);
-      if (!entry) return this.$router.push({name: 'daybook-home'})
+      this.file = null
+      this.localImage =null
+      let entry;
+      if (this.id === 'new') {
+        entry = {
+          text: 'Escibre aqui!!',
+          date: new Date().getTime()
+        }
+      }else{
+        entry = this.getEntriesbyId(this.id);
+        if ( !entry ) return this.$router.push({name: 'daybook-home'})
+
+      }
       this.entry = entry
+    },
+  async saveEntry(){
+
+    new Swal({
+        title: 'Espere por favor....',
+        allowOutsideClick: true
+      })
+    Swal.showLoading()
+    this.entry.picture = await uploadImage(this.file);
+    if(this.entry.id){
+      await this.updateEntries(this.entry);  
+    }else{
+      console.log("nuevo")
+      const id = await this.createEntries(this.entry);
+      this.$router.push({ name:'entry' , params: { id }});
     }
+    Swal.fire('Guardado', 'se guardo correctamente','success')
+    this.file = null
+        
+    },
+    async deleteEntry(){
+      const {isConfirmed} = await Swal.fire({
+        title:'¿estas seguro de eliminar la entrada?',
+        showDenyButton: true,
+        confirmButtonText: 'Si, estoy seguro'
+      })
+
+      if ( isConfirmed) {
+
+        new Swal({
+          title:'Espere por favor',
+          allowOutsideClick: false
+        })
+        Swal.showLoading();
+        await this.deleteEntries(this.entry.id);
+        this.$router.push({ name:'daybook-home'});
+        Swal.fire('Eliminado correctamente','','success')
+        
+      }
+    },
+    onLoadImage(event){
+      this.file = null
+      const file = event.target.files[0]
+
+      if (!file){
+        this.localImage = null
+        this.file = null
+        return
+      }  
+      this.file = file;
+      const image = new FileReader()
+      image.onload = () => this.localImage = image.result
+      image.readAsDataURL( file )
+    },
+    onSelectImage(){
+
+      this.$refs.inputselector.click()
+      //! se hace referencia a un elemento local "campo input file" en este caso
+
+    }
+
+
   },
   created(){
     this.loadEntry();
