@@ -1,10 +1,10 @@
 <template>
-  <nav>
+  <!-- <nav>
     <router-link :to="{name: 'home'}">
       <i class="fa-solid fa-house"></i></router-link> |
     <router-link :to="{name:'about'}">About</router-link> |
     <router-link :to="{name: 'daybook'}">Day Book</router-link>
-  </nav>
+  </nav> -->
   <router-view/>
 </template>
 

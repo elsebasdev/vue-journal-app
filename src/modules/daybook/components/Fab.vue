@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <button @click="mesaje()" class="btn btn-secondary fab">
+  <button @click="$emit('on:click')" class="btn btn-secondary fab">
     <i class="fa-solid"
     :class="icon"></i>
   </button>
