@@ -51,8 +51,8 @@ export default {
 <style scoped>
 
 .entry-scrollarea {
-  --sb-track-color: #ffffff;
-  --sb-thumb-color: #6BAF8D;
+  --sb-track-color: #f8f9fa;
+  --sb-thumb-color: #1d6042;
   --sb-size: 14px;
 }
 
@@ -73,8 +73,8 @@ export default {
 
 @supports not selector(::-webkit-scrollbar) {
   .entry-scrollarea {
-    scrollbar-color: var(--sb-thumb-color)
-                     var(--sb-track-color);
+    scrollbar-color:  var(--sb-thumb-color)
+                      var(--sb-track-color);
   }
 }
 .entry-list-container{
@@ -84,7 +84,7 @@ export default {
 .entry-scrollarea{
     width: 100%;
     margin-top: 15px;
-    height: 78vh;
-    overflow: scroll;
+    height: 81vh;
+    overflow-y: scroll;
 }
 </style>
